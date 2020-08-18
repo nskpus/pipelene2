@@ -1,0 +1,38 @@
+node{
+
+stage("checkoutcodegit")
+{
+git branch: 'development', credentialsId: 'e9236c04-35f7-478a-bb6d-ae659982319e',
+url: 'https://github.com/nskpus/Test-web-project.git'
+}
+    def mavenhome= tool name:"maven3.6.3"
+    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
+stage("build")
+{
+  sh "${mavenhome}/bin/mvn clean package"	
+
+}
+/*
+stage("executeSonarqubeReports")
+{
+  sh "${mavenhome}/bin/mvn sonar:sonar"	
+
+}
+stage("uploadArtifactory in nexus")
+{
+  sh "${mavenhome}/bin/mvn deploy"	
+
+}
+stage("Deploytomcatserver")
+{
+sshagent(['8c7270a9-d4f1-479e-8dd9-88ecee17439d'])        
+{
+   sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.127.206.58:/opt/apache-tomcat-9.0.37/webapps/"
+}
+}
+stage("email notificatio"){
+    emailext body: '''Thanks,
+nskpus
+9652233885''', subject: 'Build over', to: 'nskp.us@gmail.com,saidulu.javax@gmail.com'
+}*/
+}
